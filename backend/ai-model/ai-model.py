@@ -49,9 +49,12 @@ model=RandomForestClassifier(
     n_jobs=-1,class_weight="balanced" )
 model.fit(X_train_res,y_train_res)
 
-# Predict classes
-y_pred_class = model.predict(X_test)
+# Fraud probability (Risk Score)
+y_pred_proba_normal = model.predict_proba(X_test)[:, 0]
+y_pred_proba_fraud = model.predict_proba(X_test)[:, 1]
 
+# Convert probability → class
+y_pred_class = (y_pred_proba_fraud > 0.5).astype(int)
 # Confusion matrix
 cm = confusion_matrix(y_test, y_pred_class)
 print("Confusion Matrix:\n", cm)
