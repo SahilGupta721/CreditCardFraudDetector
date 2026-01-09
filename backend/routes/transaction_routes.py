@@ -1,8 +1,12 @@
-from controller.transaction import make_predictions
+import controller.transaction as helper
 from fastapi import APIRouter
-
+from fastapi import UploadFile
 router=APIRouter()
 
 @router.get('/dashboard/prediction')
 def get_dashboard_pred():
-    return make_predictions()
+    return helper.make_predictions()
+
+@router.post('/file_prediction')
+async def filePred(file:UploadFile):
+    return await helper.file_pred(file)
