@@ -5,11 +5,11 @@ output gonna be used for our frontend dashboard
 """
 import pandas as pd
 import joblib
-from ..core.database import database_transaction_pred, database_transaction_raw
+from core.database import database_transaction_pred, database_transaction_raw
 
 # Load model & scaler once
-model = joblib.load("../ai_model/fraud_model.pkl")
-scale = joblib.load("../ai_model/scale.pkl")
+model = joblib.load("ai_model/fraud_model.pkl")
+scale = joblib.load("ai_model/scale.pkl")
 
 def make_predictions():
     docs = list(database_transaction_raw.find({}))
@@ -33,4 +33,3 @@ def make_predictions():
 
     # Return relevant fields for dashboard
     return df[["UserID", "Merchant", "Amount", "PredictedClass", "FraudProbability"]].to_dict(orient="records")
-print(make_predictions())
