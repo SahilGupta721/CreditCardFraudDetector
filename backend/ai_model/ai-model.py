@@ -1,5 +1,5 @@
 from sklearn.preprocessing import StandardScaler
-from imblearn.over_sampling import SMOTE
+from imblearn.combine import SMOTEENN
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -40,14 +40,15 @@ X_train[["Time", "Amount"]] = scale.transform(X_train[["Time", "Amount"]])
 X_test[["Time", "Amount"]] = scale.transform(X_test[["Time", "Amount"]])
 
 #Oversampling the data
-smote = SMOTE(random_state=42)
+smote_enn = SMOTEENN(random_state=42)
 
-X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
+X_train_res, y_train_res = smote_enn.fit_resample(X_train, y_train)
 
 model=RandomForestClassifier(
-    n_estimators=200,   
+    n_estimators=2000,   
     random_state=42,
-    n_jobs=-1,class_weight="balanced" )
+    n_jobs=-1,
+    class_weight="balanced" )
 model.fit(X_train_res,y_train_res)
 
 # Fraud probability (Risk Score)
@@ -55,7 +56,7 @@ y_pred_proba_normal = model.predict_proba(X_test)[:, 0]
 y_pred_proba_fraud = model.predict_proba(X_test)[:, 1]
 
 # Convert probability → class
-y_pred_class = (y_pred_proba_fraud > 0.5).astype(int)
+y_pred_class = (y_pred_proba_fraud > 0.2).astype(int)
 # Confusion matrix
 cm = confusion_matrix(y_test, y_pred_class)
 print("Confusion Matrix:\n", cm)

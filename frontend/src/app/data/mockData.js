@@ -1,16 +1,4 @@
-export interface Transaction {
-  id: string;
-  timestamp: string;
-  userId: string;
-  amount: number;
-  merchant: string;
-  location: string;
-  riskScore: number;
-  status: 'Normal' | 'Review' | 'Fraud';
-  explanations: string[];
-}
-
-export const mockTransactions: Transaction[] = [
+export const mockTransactions = [
   {
     id: 'TXN-001',
     timestamp: '2026-01-03 14:23:45',

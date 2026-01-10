@@ -1,13 +1,7 @@
 import { Download } from 'lucide-react';
 import { utils, writeFile } from 'xlsx';
-import { Transaction } from '../data/mockData';
 
-interface ExportDataProps {
-  transactions: Transaction[];
-  dataSource: 'mock' | 'uploaded';
-}
-
-export function ExportData({ transactions, dataSource }: ExportDataProps) {
+export function ExportData({ transactions, dataSource }) {
   const handleExport = () => {
     // Prepare data for Excel export
     const exportData = transactions.map(txn => ({

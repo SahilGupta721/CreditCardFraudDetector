@@ -38,7 +38,7 @@ def make_predictions():
     #database_transaction_pred.insert_many(df.to_dict(orient="records"))
 
     # Return relevant fields for dashboard
-    return df[["UserID", "Merchant", "Amount", "PredictedClass", "FraudProbability"]].to_dict(orient="records") #converts dataframe into JSON format
+    return df[["Timestamp","UserID", "Merchant", "Amount", "PredictedClass", "FraudProbability", "Location"]].to_dict(orient="records") #converts dataframe into JSON format
 
 async def file_pred(file:UploadFile):
     
