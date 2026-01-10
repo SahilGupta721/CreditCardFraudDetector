@@ -1,79 +1,76 @@
+import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
-import { utils, writeFile } from 'xlsx';
 
-export function ExportData({ transactions, dataSource }) {
-  const handleExport = () => {
-    // Prepare data for Excel export
-    const exportData = transactions.map(txn => ({
-      'Transaction ID': txn.id,
-      'Timestamp': txn.timestamp,
-      'User ID': txn.userId,
-      'Amount ($)': txn.amount,
-      'Merchant': txn.merchant,
-      'Location': txn.location,
-      'Risk Score': txn.riskScore,
-      'Status': txn.status,
-      'Risk Explanations': txn.explanations.join('; ')
-    }));
+export function ExportData({ kpis }) {
+  const [downloading, setDownloading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  console.log(kpis)
+  console.log(kpis.totalTransactions)
+  useEffect(() => {
+    if (kpis && kpis.totalTransactions > 0) {
 
-    // Create workbook and worksheet
-    const ws = utils.json_to_sheet(exportData);
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, 'Transactions');
+      setShowPopup(true); // show popup once processing is done
+    } else {
+      setShowPopup(false);
+    }
+  }, [kpis]);
 
-    // Set column widths for better readability
-    ws['!cols'] = [
-      { wch: 15 }, // Transaction ID
-      { wch: 20 }, // Timestamp
-      { wch: 12 }, // User ID
-      { wch: 12 }, // Amount
-      { wch: 25 }, // Merchant
-      { wch: 20 }, // Location
-      { wch: 12 }, // Risk Score
-      { wch: 10 }, // Status
-      { wch: 60 }  // Risk Explanations
-    ];
 
-    // Generate filename with timestamp
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
-    const filename = `fraud_detection_${dataSource}_${timestamp}.xlsx`;
+  const handleExport = async () => {
+    try {
+      setDownloading(true);
 
-    // Download the file
-    writeFile(wb, filename);
+      const res = await fetch('http://localhost:8000/download_prediction');
+      if (!res.ok) throw new Error('Failed to download file');
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'predicted_transactions.xlsx';
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+      setShowPopup(false);
+    } catch (err) {
+      console.error(err);
+      alert('Download failed. Please try again.');
+    } finally {
+      setDownloading(false);
+    }
   };
 
+  if (!showPopup) return null;
+
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
-      <div className="flex items-start justify-between">
-        <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Export Transaction Data
-          </h3>
-          <p className="text-sm text-gray-600 mb-4">
-            Download all transaction data including risk scores, classifications, and detailed explanations in Excel format (.xlsx).
-          </p>
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-[340px] shadow-xl">
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">
+          File Ready
+        </h3>
+        <p className="text-sm text-gray-600 mb-4">
+          Your result file is ready. Click below to download.
+        </p>
+
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={() => setShowPopup(false)}
+            className="px-4 py-2 text-sm rounded-md border border-gray-300 hover:bg-gray-100"
+          >
+            Later
+          </button>
           <button
             onClick={handleExport}
-            className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            disabled={downloading}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-blue-600 text-white rounded-md
+                       hover:bg-blue-700 disabled:opacity-50"
           >
             <Download className="w-4 h-4" />
-            Download Excel File
+            {downloading ? 'Downloading...' : 'Download File'}
           </button>
-        </div>
-        <div className="ml-6 flex items-center justify-center w-16 h-16 bg-blue-50 rounded-lg">
-          <Download className="w-8 h-8 text-blue-600" />
-        </div>
-      </div>
-      <div className="mt-4 pt-4 border-t border-gray-100">
-        <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-600">Data Source:</span>
-          <span className="font-medium text-gray-900">
-            {dataSource === 'uploaded' ? 'Uploaded File' : 'Mock Data'}
-          </span>
-        </div>
-        <div className="flex items-center justify-between text-sm mt-2">
-          <span className="text-gray-600">Total Records:</span>
-          <span className="font-medium text-gray-900">{transactions.length}</span>
         </div>
       </div>
     </div>

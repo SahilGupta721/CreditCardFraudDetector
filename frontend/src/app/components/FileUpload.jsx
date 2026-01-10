@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import { Upload, FileText, AlertCircle } from 'lucide-react';
 
-export function FileUpload({ onKpiUpdate }) {
+export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
   const [isDragging, setIsDragging] = useState(false);
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -37,6 +37,9 @@ export function FileUpload({ onKpiUpdate }) {
       // 🔑 Update KPIs in parent if function exists
       if (typeof onKpiUpdate === 'function' && data.kpis) {
         onKpiUpdate(data.kpis);
+      }
+      if (typeof onTransactionsUpdate === 'function') {
+        onTransactionsUpdate(data.results || data.transactions || []);
       }
 
       // Optional: trigger file download
@@ -76,8 +79,8 @@ export function FileUpload({ onKpiUpdate }) {
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragging
-            ? 'border-blue-500 bg-blue-50'
-            : 'border-gray-300 hover:bg-gray-50'
+          ? 'border-blue-500 bg-blue-50'
+          : 'border-gray-300 hover:bg-gray-50'
           }`}
       >
         <input

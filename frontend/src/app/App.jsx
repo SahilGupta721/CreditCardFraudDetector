@@ -4,11 +4,11 @@ import { TransactionTable } from './components/TransactionTable';
 import { ModelInfoFooter } from './components/ModelInfoFooter';
 import { FileUpload } from './components/FileUpload';
 import { ExportData } from './components/ExportData';
-import { mockTransactions, kpiData } from './data/mockData';
+import { kpiData } from './info/existing_info';
 
 export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [transactions, setTransactions] = useState(mockTransactions);
+  const [transactions, setTransactions] = useState([]);
   const [kpis, setKpis] = useState({
     totalTransactions: kpiData.totalTransactions,
     suspiciousTransactions: kpiData.suspiciousTransactions,
@@ -39,7 +39,9 @@ export default function App() {
               modelVersion: apiKpis.model_version,
               threshold: kpis.threshold,
             });
+            setFileProcessed(true);
           }}
+          onTransactionsUpdate={setTransactions}
         />
 
         {/* KPI Cards */}
@@ -77,13 +79,13 @@ export default function App() {
           <TransactionTable
             transactions={transactions}
             selectedTransaction={selectedTransaction}
-            onSelectTransaction={setSelectedTransaction}
+            onSelectTransaction={setSelectedTransaction} // 🔑 was incorrectly setTransactions
           />
         </div>
 
 
         <div className="mb-8">
-          <ExportData transactions={transactions} dataSource="uploaded" />
+          <ExportData kpis={kpis} dataSource="uploaded" />
         </div>
 
         <ModelInfoFooter />

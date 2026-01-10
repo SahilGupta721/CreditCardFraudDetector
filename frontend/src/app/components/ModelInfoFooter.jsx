@@ -1,11 +1,10 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { modelMetrics, featureImportance } from '../data/mockData';
+import { modelMetrics } from '../info/existing_info';
 
 export function ModelInfoFooter() {
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h2 className="text-lg font-semibold text-gray-900 mb-6">Model Performance & Transparency</h2>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Model Metrics */}
         <div>
@@ -42,19 +41,6 @@ export function ModelInfoFooter() {
           </div>
         </div>
 
-        {/* Feature Importance */}
-        <div>
-          <h3 className="text-base font-semibold text-gray-900 mb-4">Feature Importance</h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={featureImportance} layout="vertical">
-              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-              <XAxis type="number" tick={{ fontSize: 12 }} stroke="#6b7280" />
-              <YAxis type="category" dataKey="feature" tick={{ fontSize: 12 }} stroke="#6b7280" width={150} />
-              <Tooltip />
-              <Bar dataKey="importance" fill="#3b82f6" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
       </div>
     </div>
   );
