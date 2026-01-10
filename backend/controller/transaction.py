@@ -1,5 +1,5 @@
 """
-The motive of this code to generate predicted values from some already existed data in MongoDB, so once we got the predicted values that
+The motive of make_prediction() to generate predicted values from some already existed data in MongoDB, so once we got the predicted values that
 output gonna be used for our frontend dashboard, since predicted values are already stored inside collection so we don't 
 wanna insert same documents again, instead we get all documents to populate frontend
 
@@ -58,11 +58,35 @@ async def file_pred(file:UploadFile):
     df.to_excel(output, index=False)
     output.seek(0)  
     
+    #Calculating KPIs
+    
+    total_transactions = len(df)
+    fraud_count = int((df['PredictedClass'] == 1).sum())
+    fraud_rate = round((fraud_count / total_transactions) * 100, 2)
+    
     #Sending file to the frontend
+
+    #temporarily saves Pandas DataFrame to disk so another API endpoint can use
+    df.to_pickle("temp_last_prediction.pkl")
+    return {
+        "kpis": {
+            "total_transactions": total_transactions,
+            "fraud_count": fraud_count,
+            "fraud_rate": fraud_rate,
+            "model_version": "v1.0.0-rf-smote"
+        }
+
+}
+
+def download_prediction():
+    df = pd.read_pickle("temp_last_prediction.pkl")
+
+    output = BytesIO()
+    df.to_excel(output, index=False)
+    output.seek(0)
+
     return StreamingResponse(
-    output,
-    media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    headers={
-        "Content-Disposition": "attachment; filename=predicted_transactions.xlsx"
-    }
-)
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": "attachment; filename=predicted_transactions.xlsx"}
+    )
