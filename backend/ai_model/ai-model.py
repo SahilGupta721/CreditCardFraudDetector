@@ -45,7 +45,7 @@ smote = SMOTE(random_state=42)
 X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
 
 model=RandomForestClassifier(
-    n_estimators=200,   
+    n_estimators=2000,   
     random_state=42,
     n_jobs=-1,class_weight="balanced" )
 model.fit(X_train_res,y_train_res)
