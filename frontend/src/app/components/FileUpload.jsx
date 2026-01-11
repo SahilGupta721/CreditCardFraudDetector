@@ -10,13 +10,16 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
   const uploadFile = async (file) => {
     setError(null);
     setIsProcessing(true);
-    // Check file size (max 90MB)
-    const MAX_SIZE = 90 * 1024 * 1024; // 90 MB in bytes
+
+    // ✅ Check file size (max 90MB)
+    const MAX_SIZE = 90 * 1024 * 1024;
     if (file.size > MAX_SIZE) {
       setError('File size exceeds 90 MB limit.');
       setIsProcessing(false);
       return;
     }
+
+    // ✅ Check extension
     const ext = file.name.split('.').pop().toLowerCase();
     if (!['xlsx', 'xls'].includes(ext)) {
       setError('Only Excel files (.xlsx, .xls) are supported.');
@@ -37,18 +40,21 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
         throw new Error('Backend processing failed');
       }
 
-      const data = await res.json();
-      console.log('API Response:', data);
+      // ✅ Handle backend returning an Excel file
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'predicted_transactions.xlsx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
 
-      // 🔑 Update KPIs in parent if function exists
-      if (typeof onKpiUpdate === 'function' && data.kpis) {
-        onKpiUpdate(data.kpis);
-      }
-      if (typeof onTransactionsUpdate === 'function') {
-        onTransactionsUpdate(data.results || data.transactions || []);
-      }
-
-
+      // 🔑 Optional: if backend also sends KPIs in headers or JSON (needs backend support)
+      // Example if backend sends JSON in a separate endpoint or in headers:
+      // const kpis = JSON.parse(res.headers.get('X-KPIs') || '{}');
+      // if (typeof onKpiUpdate === 'function') onKpiUpdate(kpis);
 
     } catch (err) {
       setError(err.message || 'Something went wrong while uploading.');
@@ -83,9 +89,7 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
         onClick={() => fileInputRef.current?.click()}
-        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragging
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 hover:bg-gray-50'
+        className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 hover:bg-gray-50'
           }`}
       >
         <input
