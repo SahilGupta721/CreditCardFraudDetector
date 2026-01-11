@@ -51,21 +51,10 @@ AI-ML-Project/
 - **Imbalanced Handling:** SMOTEENN for oversampling minority class  
 - **Evaluation Metrics:** Precision, Recall, F1-score
 
-**Threshold Tuning Results**:
-
-| Threshold | Flagged Transactions | Precision | Recall | F1-Score |
-|-----------|--------------------|-----------|--------|----------|
-| 0.005     | 7194               | 0.013     | 0.959  | 0.026    |
-| 0.01      | 4033               | 0.023     | 0.939  | 0.045    |
-| 0.03      | 1274               | 0.071     | 0.918  | 0.131    |
-| 0.05      | 691                | 0.130     | 0.918  | 0.228    |
-| 0.1       | 306                | 0.288     | 0.898  | 0.436    |
-| 0.2       | 159                | 0.553     | 0.898  | 0.685    |
-
 **Confusion Matrix (Threshold 0.2)**:
 ```
-[[56793    71]
- [   10    88]]
+[[56857    7]
+ [   15    83]]
 ```
 
 ---
