@@ -45,7 +45,7 @@ smote = SMOTE(random_state=42)
 X_train_res, y_train_res = smote.fit_resample(X_train, y_train)
 
 model=RandomForestClassifier(
-    n_estimators=2000,   
+    n_estimators=500,   
     random_state=42,
     n_jobs=-1,class_weight="balanced" )
 model.fit(X_train_res,y_train_res)
@@ -68,7 +68,7 @@ f1 = f1_score(y_test, y_pred_class)
 print(f"Precision: {precision:.4f}, Recall: {recall:.4f}, F1: {f1:.4f}")
 
 # Saving  trained model
-joblib.dump(model, "fraud_model.pkl")
+joblib.dump(model, "fraud_model.pkl", compress=3)
 
 # Saving the scale too
 joblib.dump(scale, "scale.pkl")

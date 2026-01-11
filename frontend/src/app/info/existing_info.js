@@ -9,10 +9,10 @@ export const kpiData = {
 
 export const modelMetrics = {
   modelType: 'Random Forest Classifier',
-  precision: 0.5535,
-  recall: 0.8980,
+  precision: 0.9222,
+  recall: 0.8469,
   lastTrainingDate: '2025-01-08',
   features: 38,
-  treeCount: 2000
+  treeCount: 500
 };
 

@@ -10,28 +10,11 @@ from core.database import database_transaction_pred, database_transaction_raw
 from fastapi import UploadFile
 from fastapi.responses import StreamingResponse
 from io import BytesIO
-from pathlib import Path
-import requests
+from fastapi.responses import StreamingResponse
 
-MODEL_URL='https://huggingface.co/Sahil9005/CreditCardFraudDetection/resolve/main/fraud_model.pkl'
-SCALER_URL='https://huggingface.co/Sahil9005/CreditCardFraudDetection/resolve/main/scale.pkl'
-
-MODEL_PATH = Path("fraud_model.pkl")
-SCALER_PATH = Path("scale.pkl")
-def download_if_missing(url, path):
-    if not path.exists():
-        r = requests.get(url)
-        r.raise_for_status()
-        path.write_bytes(r.content)
-
-# Download once at startup (Render cloud server will do this on deploy)
-download_if_missing(MODEL_URL, MODEL_PATH)
-download_if_missing(SCALER_URL, SCALER_PATH)
-
-# Load model & scaler
-model = joblib.load(MODEL_PATH)
-scale = joblib.load(SCALER_PATH)
-
+# Load model & scaler once
+model = joblib.load("ai_model/fraud_model.pkl")
+scale = joblib.load("ai_model/scale.pkl")
 
 def make_predictions():
     docs = list(database_transaction_raw.find({}))
