@@ -10,7 +10,13 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
   const uploadFile = async (file) => {
     setError(null);
     setIsProcessing(true);
-
+    // Check file size (max 90MB)
+    const MAX_SIZE = 90 * 1024 * 1024; // 90 MB in bytes
+    if (file.size > MAX_SIZE) {
+      setError('File size exceeds 90 MB limit.');
+      setIsProcessing(false);
+      return;
+    }
     const ext = file.name.split('.').pop().toLowerCase();
     if (!['xlsx', 'xls'].includes(ext)) {
       setError('Only Excel files (.xlsx, .xls) are supported.');
