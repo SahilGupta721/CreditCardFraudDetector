@@ -4,13 +4,13 @@ export const kpiData = {
   suspiciousTransactions: 234,
   fraudRate: 1.88,
   modelVersion: 'v2.4.1',
-  threshold: 0.65
+  threshold: 0.2
 };
 
 export const modelMetrics = {
   modelType: 'Random Forest Classifier',
-  precision: 0.6170,
-  recall: 0.88878,
+  precision: 0.5535,
+  recall: 0.8980,
   lastTrainingDate: '2025-01-08',
   features: 38,
   treeCount: 2000
