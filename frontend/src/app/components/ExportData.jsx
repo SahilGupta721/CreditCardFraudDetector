@@ -1,26 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 
-export function ExportData({ kpis }) {
+export function ExportData({ kpis, fileProcessed, onResetFileProcessed }) {
   const [downloading, setDownloading] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  console.log(kpis)
-  console.log(kpis.totalTransactions)
-  useEffect(() => {
-    if (kpis && kpis.totalTransactions > 0) {
 
-      setShowPopup(true); // show popup once processing is done
+  useEffect(() => {
+    // Showing popup only if file is uploaded & processed
+    if (fileProcessed) {
+      setShowPopup(true);
     } else {
       setShowPopup(false);
     }
-  }, [kpis]);
-
+  }, [fileProcessed]);
 
   const handleExport = async () => {
     try {
       setDownloading(true);
 
-      const res = await fetch('http://localhost:8000/download_prediction');
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/download_prediction`);
       if (!res.ok) throw new Error('Failed to download file');
 
       const blob = await res.blob();
@@ -34,7 +32,11 @@ export function ExportData({ kpis }) {
 
       a.remove();
       window.URL.revokeObjectURL(url);
+
       setShowPopup(false);
+      if (typeof onResetFileProcessed === 'function') {
+        onResetFileProcessed(); // Reset the flag in parent after download
+      }
     } catch (err) {
       console.error(err);
       alert('Download failed. Please try again.');

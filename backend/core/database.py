@@ -1,5 +1,10 @@
 from pymongo import MongoClient
-connection_string='mongodb+srv://sahilgupta70500_db_user:jpZvZQgXtV6bQeId@cluster0.f7y8olo.mongodb.net/?appName=Cluster0'
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+connection_string = os.getenv("MONGO_URI")
 
 client=MongoClient(connection_string,serverSelectiontimeoutMS=3000)
 database=client['creditcard-fraud-detection']

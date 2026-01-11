@@ -22,10 +22,7 @@ export function ModelInfoFooter() {
               <span className="text-sm text-gray-600">Recall</span>
               <span className="text-sm font-medium text-gray-900">{(modelMetrics.recall * 100).toFixed(1)}%</span>
             </div>
-            <div className="flex justify-between items-center py-2 border-b border-gray-100">
-              <span className="text-sm text-gray-600">AUC Score</span>
-              <span className="text-sm font-medium text-gray-900">{(modelMetrics.auc * 100).toFixed(1)}%</span>
-            </div>
+
             <div className="flex justify-between items-center py-2 border-b border-gray-100">
               <span className="text-sm text-gray-600">Last Training</span>
               <span className="text-sm font-medium text-gray-900">{modelMetrics.lastTrainingDate}</span>

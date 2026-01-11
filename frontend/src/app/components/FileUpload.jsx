@@ -22,7 +22,7 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await fetch('http://127.0.0.1:8000/file_prediction', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/file_prediction`, {
         method: 'POST',
         body: formData,
       });
@@ -31,7 +31,7 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
         throw new Error('Backend processing failed');
       }
 
-      const data = await res.json(); // expects { kpis: {...}, results: [...] }
+      const data = await res.json();
       console.log('API Response:', data);
 
       // 🔑 Update KPIs in parent if function exists
@@ -42,8 +42,7 @@ export function FileUpload({ onKpiUpdate, onTransactionsUpdate }) {
         onTransactionsUpdate(data.results || data.transactions || []);
       }
 
-      // Optional: trigger file download
-      // window.location.href = 'http://127.0.0.1:8000/file_prediction/download';
+
 
     } catch (err) {
       setError(err.message || 'Something went wrong while uploading.');

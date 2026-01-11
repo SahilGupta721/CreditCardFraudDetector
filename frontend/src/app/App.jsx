@@ -9,6 +9,7 @@ import { kpiData } from './info/existing_info';
 export default function App() {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [transactions, setTransactions] = useState([]);
+  const [fileProcessed, setFileProcessed] = useState(false); // ✅ Added
   const [kpis, setKpis] = useState({
     totalTransactions: kpiData.totalTransactions,
     suspiciousTransactions: kpiData.suspiciousTransactions,
@@ -21,7 +22,7 @@ export default function App() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white border-b border-gray-200 px-8 py-6">
         <h1 className="text-2xl font-semibold text-gray-900">
-          Fraud Detection Analytics Dashboard
+          Credit Card Fraud Detection Analytics Dashboard
         </h1>
         <p className="text-sm text-gray-600 mt-1">
           Machine Learning–Based Transaction Risk Monitoring
@@ -39,9 +40,12 @@ export default function App() {
               modelVersion: apiKpis.model_version,
               threshold: kpis.threshold,
             });
-            setFileProcessed(true);
+            setFileProcessed(true); // ✅ Mark file as processed
           }}
-          onTransactionsUpdate={setTransactions}
+          onTransactionsUpdate={(data) => {
+            setTransactions(data);
+            setFileProcessed(true); // ✅ Make sure we also mark file processed on transactions
+          }}
         />
 
         {/* KPI Cards */}
@@ -74,18 +78,17 @@ export default function App() {
             <h2 className="text-lg font-semibold text-gray-900">
               Recent Transactions
             </h2>
-            <p className="text-sm text-gray-500">Click on a row to view details</p>
           </div>
           <TransactionTable
             transactions={transactions}
             selectedTransaction={selectedTransaction}
-            onSelectTransaction={setSelectedTransaction} // 🔑 was incorrectly setTransactions
+            onSelectTransaction={setSelectedTransaction}
           />
         </div>
 
-
+        {/* Export File */}
         <div className="mb-8">
-          <ExportData kpis={kpis} dataSource="uploaded" />
+          <ExportData kpis={kpis} fileProcessed={fileProcessed} /> {/* ✅ Pass fileProcessed */}
         </div>
 
         <ModelInfoFooter />

@@ -1,3 +1,4 @@
+// kpiData is just here to show a sample summary to user
 export const kpiData = {
   totalTransactions: 12458,
   suspiciousTransactions: 234,
@@ -8,11 +9,10 @@ export const kpiData = {
 
 export const modelMetrics = {
   modelType: 'Random Forest Classifier',
-  precision: 0.94,
-  recall: 0.89,
-  auc: 0.96,
-  lastTrainingDate: '2025-12-28',
-  features: 47,
-  treeCount: 500
+  precision: 0.6170,
+  recall: 0.88878,
+  lastTrainingDate: '2025-01-08',
+  features: 38,
+  treeCount: 2000
 };
 

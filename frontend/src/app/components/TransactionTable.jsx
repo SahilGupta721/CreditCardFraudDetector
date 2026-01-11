@@ -5,7 +5,7 @@ export function TransactionTable() {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   useEffect(() => {
-    fetch('http://127.0.0.1:8000/dashboard/prediction/')
+    fetch(`${import.meta.env.VITE_API_BASE_URL}/dashboard/prediction/`)
       .then((res) => res.json())
       .then((data) => {
         setTransactions(data);
